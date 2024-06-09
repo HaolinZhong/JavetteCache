@@ -12,23 +12,25 @@ import static dev.haolin.exception.CacheExceptionMsgEnum.TOPIC_ALREADY_EXISTS;
 
 public class JavetteCache {
 
-    private final Map<String, Topic> topics = new ConcurrentHashMap<>();
+    private JavetteCache() {}
 
-    public Topic registerTopic(String name, Function<String, Object> loader, long maxByte) {
+    private static final Map<String, Topic> topics = new ConcurrentHashMap<>();
+
+    public static Topic registerTopic(String name, Function<String, Object> loader, long maxByte) {
         return topics.compute(name, (key, value) -> {
             if (value != null) throw new CacheException(TOPIC_ALREADY_EXISTS);
             return new Topic(key, loader, maxByte);
         });
     }
 
-    public Topic registerTopic(String name, Function<String, Object> loader, long maxByte, BiConsumer<String, Object> onEviction) {
+    public static Topic registerTopic(String name, Function<String, Object> loader, long maxByte, BiConsumer<String, Object> onEviction) {
         return topics.compute(name, (key, value) -> {
             if (value != null) throw new CacheException(TOPIC_ALREADY_EXISTS);
             return new Topic(key, loader, maxByte, onEviction);
         });
     }
 
-    public Topic getTopic(String name) {
+    public static Topic getTopic(String name) {
         return topics.get(name);
     }
 }
