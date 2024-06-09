@@ -1,4 +1,4 @@
-package dev.haolin.model;
+package dev.haolin.model.lru;
 
 import dev.haolin.exception.CacheException;
 
@@ -6,38 +6,38 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import static dev.haolin.exception.CacheExceptionMsgEnum.OVERFLOW_EXCEPTION;
-import static dev.haolin.model.LinkedEntry.entrySizeOf;
+import static dev.haolin.model.lru.LinkedEntry.entrySizeOf;
 import static dev.haolin.util.SizeUtil.byteSizeOf;
 
-public class Cache extends ConcurrentLinkedHashMap<String, Object> {
+public class LRUCache extends LinkedHashMap<String, Object> {
 
     private final long maxBytes;
 
     private long nBytes;
 
-    private ConcurrentLinkedHashMap<String, Object> map;
+    private LinkedHashMap<String, Object> map;
 
     private Optional<BiConsumer<String, Object>> optionalOnEviction;
 
-    public Cache(long maxBytes) {
+    public LRUCache(long maxBytes) {
         this.maxBytes = maxBytes;
-        this.map = new ConcurrentLinkedHashMap<>();
+        this.map = new LinkedHashMap<>();
         this.optionalOnEviction = Optional.empty();
     }
 
-    public Cache(long maxBytes, BiConsumer<String, Object> optionalOnEviction) {
+    public LRUCache(long maxBytes, BiConsumer<String, Object> optionalOnEviction) {
         this.maxBytes = maxBytes;
         this.optionalOnEviction = Optional.ofNullable(optionalOnEviction);
-        this.map = new ConcurrentLinkedHashMap<>();
+        this.map = new LinkedHashMap<>();
     }
 
     @Override
-    protected boolean removeEldestEntry(LinkedEntry<String, Object> linkedEntry) {
+    protected final boolean removeEldestEntry(LinkedEntry<String, Object> linkedEntry) {
         return nBytes > maxBytes;
     }
 
     /***
-     * Remove is the only method that delete an entry from ConcurrentLinkedHashMap.
+     * Remove is the only method that delete an entry from LinkedHashMap.
      * Updating nBytes in this overrode method ensures nBytes remains consistent before/after remove operation.
      * @param key key whose mapping is to be removed from the map
      * @return

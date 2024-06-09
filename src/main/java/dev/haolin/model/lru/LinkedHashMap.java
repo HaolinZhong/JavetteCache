@@ -1,14 +1,13 @@
-package dev.haolin.model;
+package dev.haolin.model.lru;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class ConcurrentLinkedHashMap<K, V> implements Map<K, V> {
+public class LinkedHashMap<K, V> implements Map<K, V> {
 
     private transient LinkedEntry<K, V> dummyHead, dummyTail;
     private Map<K, LinkedEntry<K, V>> keyToEntryMap;
 
-    public ConcurrentLinkedHashMap() {
+    public LinkedHashMap() {
         this.dummyHead = LinkedEntry.dummy();
         this.dummyTail = LinkedEntry.dummy();
         this.keyToEntryMap = new HashMap<>();

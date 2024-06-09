@@ -1,2 +1,2 @@
 # JavetteCache
-A mini distributed cache implemented in Java.
+A mini distributed LRUCache implemented in Java.

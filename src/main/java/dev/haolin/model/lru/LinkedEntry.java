@@ -1,4 +1,4 @@
-package dev.haolin.model;
+package dev.haolin.model.lru;
 
 import lombok.Data;
 
